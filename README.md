@@ -86,3 +86,77 @@ dataset/
 └── test/
     ├── images/
     └── labels/
+
+## 8. Firmware
+
+O firmware da ESP32-CAM foi desenvolvido utilizando MicroPython.
+
+Os arquivos do firmware estão localizados na pasta `firmware/`.
+
+```text
+firmware/
+├── boot.py
+└── main.py
+```
+
+O firmware permite a conexão da ESP32-CAM à rede Wi-Fi e disponibiliza um servidor HTTP para acesso à câmera através do navegador, possibilitando a visualização e captura das imagens.
+
+## 9. Treinamento e testes
+
+Foi realizado um treinamento experimental utilizando o modelo YOLOv11 Nano com o dataset desenvolvido.
+
+Também foram realizados testes de detecção utilizando as classes `redbull can` e `caneca`.
+
+## 10. Evidências
+
+As evidências do desenvolvimento do projeto estão disponíveis na pasta `evidencias/`.
+
+Entre as evidências estão:
+
+- ESP32-CAM funcionando;
+- Visualização da câmera através do navegador;
+- Dataset no Roboflow;
+- Organização e versão do dataset;
+- Anotações das classes;
+- Treinamento experimental;
+- Testes de detecção.
+
+## 11. Estrutura da entrega
+
+A estrutura final do projeto está organizada da seguinte maneira:
+
+```text
+CP1/
+├── firmware/
+│   ├── boot.py
+│   └── main.py
+│
+├── evidencias/
+│   ├── esp32cam_funcionando.png
+│   └── Roboflow_CP1_Documentacao.pdf
+│
+├── dataset/
+│   └── redbull.v3i.yolov11.zip
+│
+└── README.md
+```
+
+## 12. Execução da ESP32-CAM
+
+Para executar o firmware:
+
+1. Configurar o ambiente MicroPython para a ESP32-CAM AI Thinker.
+2. Configurar as informações da rede Wi-Fi no código.
+3. Enviar os arquivos do firmware para a ESP32-CAM.
+4. Executar o programa na placa.
+5. Identificar o endereço IP disponibilizado pela ESP32-CAM.
+6. Acessar o endereço IP através de um navegador.
+7. Utilizar a interface web para visualizar e realizar capturas de imagens.
+
+## 13. Resultado
+
+Ao final do processo, foi desenvolvido um dataset com duas classes de objetos, contendo imagens coletadas, organizadas e anotadas no Roboflow.
+
+O dataset foi exportado em formato YOLO e utilizado experimentalmente para o treinamento de um modelo YOLOv11 Nano e realização de testes de detecção.
+
+As evidências e os arquivos utilizados no desenvolvimento estão organizados nas respectivas pastas desta entrega.
