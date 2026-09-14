@@ -11,31 +11,32 @@
 
 ## 1. Objetivo
 
-O projeto tem como objetivo desenvolver a etapa de construção de um dataset para um sistema de visão computacional utilizando uma ESP32-CAM e o modelo YOLO para detecção de objetos.
+O projeto tem como objetivo desenvolver uma solução de Visão Computacional utilizando uma ESP32-CAM para aquisição de imagens e um modelo YOLO para detecção de objetos.
 
 A ESP32-CAM é utilizada para realizar a captura das imagens. Após a coleta, as imagens são organizadas e anotadas no Roboflow, utilizando bounding boxes para identificar os objetos pertencentes às classes definidas no projeto.
 
-O dataset produzido é posteriormente exportado em formato compatível com YOLO.
+O dataset produzido é utilizado para o treinamento de um modelo YOLOv11 Nano para detecção dos objetos.
 
 ## 2. Tecnologias utilizadas
 
 - ESP32-CAM AI Thinker
 - MicroPython
 - Python
+- OpenCV
 - Roboflow
 - YOLO
 - YOLOv11 Nano
 
 ## 3. Classes do projeto
 
-O dataset possui duas classes:
+O dataset possui duas classes oficiais:
 
-| Classe | Quantidade de imagens |
-|---|---:|
-| redbull can | 104 |
-| caneca | 73 |
+| Classe |
+|---|
+| phone |
+| water_bottle |
 
-A quantidade de 73 imagens para a classe `caneca` foi autorizada pelo professor.
+As classes utilizadas foram definidas para o projeto e utilizadas durante as etapas de anotação, treinamento e testes.
 
 ## 4. Coleta das imagens
 
@@ -43,7 +44,9 @@ As imagens utilizadas no projeto foram coletadas utilizando a ESP32-CAM.
 
 Durante a construção do dataset, foram consideradas variações de ângulo, distância, iluminação, posição dos objetos e fundo, buscando evitar imagens excessivamente repetitivas.
 
-Após a coleta, as imagens foram organizadas para serem utilizadas na etapa de anotação.
+A quantidade de imagens utilizada foi definida de acordo com as orientações do professor.
+
+Após a coleta, as imagens foram organizadas e enviadas para o Roboflow para a etapa de anotação.
 
 ## 5. Anotação das imagens
 
@@ -51,8 +54,8 @@ As imagens foram enviadas para o Roboflow e anotadas utilizando bounding boxes.
 
 Cada objeto identificado foi associado à sua respectiva classe:
 
-- `redbull can`
-- `caneca`
+- `phone`
+- `water_bottle`
 
 As bounding boxes foram posicionadas sobre os objetos presentes nas imagens para identificar sua localização e respectiva classe.
 
@@ -60,17 +63,17 @@ As bounding boxes foram posicionadas sobre os objetos presentes nas imagens para
 
 O dataset foi desenvolvido e organizado utilizando o Roboflow.
 
-**Projeto:** `redbull-sklf8`
+**Projeto:** `espcan`
 
-**Versão do dataset:** `v3`
+**Versão do dataset:** `v1`
 
-**Link do projeto:**
+**Quantidade de imagens:** 285
 
-https://app.roboflow.com/lucas-silverio-bomtempo-silverio-bomtempo/redbull-sklf8/browse
+**Modelo utilizado no treinamento:** YOLOv11 Nano
 
 ## 7. Organização do dataset
 
-O dataset foi exportado em formato compatível com YOLO.
+O dataset é organizado para utilização com YOLO.
 
 A estrutura contém os diretórios de treinamento, validação e teste, além do arquivo `data.yaml`.
 
@@ -86,6 +89,7 @@ dataset/
 └── test/
     ├── images/
     └── labels/
+```
 
 ## 8. Firmware
 
@@ -101,13 +105,63 @@ firmware/
 
 O firmware permite a conexão da ESP32-CAM à rede Wi-Fi e disponibiliza um servidor HTTP para acesso à câmera através do navegador, possibilitando a visualização e captura das imagens.
 
-## 9. Treinamento e testes
+## 9. Captura das imagens com Python
 
-Foi realizado um treinamento experimental utilizando o modelo YOLOv11 Nano com o dataset desenvolvido.
+Além do firmware da ESP32-CAM, foi desenvolvido um script em Python para realizar a captura das imagens através do endereço HTTP disponibilizado pela câmera.
 
-Também foram realizados testes de detecção utilizando as classes `redbull can` e `caneca`.
+O programa utiliza as bibliotecas `OpenCV`, `Requests` e `NumPy`.
 
-## 10. Evidências
+O script realiza as seguintes etapas:
+
+1. Conecta-se ao endereço HTTP da ESP32-CAM.
+2. Solicita uma imagem através do endpoint `/capture`.
+3. Recebe os dados da imagem.
+4. Converte os dados recebidos para uma imagem utilizando OpenCV.
+5. Exibe a imagem em uma janela.
+6. Salva automaticamente as imagens na pasta `fotos/`.
+7. Utiliza timestamp e contador para evitar a sobrescrita dos arquivos.
+8. Permite encerrar a captura pressionando a tecla `Q`.
+
+## 10. Treinamento
+
+Foi realizado o treinamento de um modelo de detecção utilizando o YOLOv11 Nano e o dataset desenvolvido no Roboflow.
+
+O modelo treinado foi:
+
+**YOLOv11 Nano**
+
+O treinamento foi realizado utilizando a versão do dataset contendo as imagens anotadas das classes `phone` e `water_bottle`.
+
+## 11. Resultados do treinamento
+
+O modelo treinado apresentou os seguintes resultados no conjunto de validação:
+
+| Métrica | Resultado |
+|---|---:|
+| mAP@50 | 97,6% |
+| Precision | 98,1% |
+| Recall | 98,1% |
+| F1 | 98,1% |
+
+Esses resultados demonstram um bom desempenho do modelo na identificação dos objetos presentes no dataset.
+
+## 12. Testes de detecção
+
+Após o treinamento, o modelo foi testado utilizando imagens diferentes das utilizadas diretamente durante a captura.
+
+Foram realizados testes com as duas classes do projeto:
+
+- `phone`
+- `water_bottle`
+
+Nos testes realizados no Roboflow, o modelo conseguiu identificar os objetos e gerar suas respectivas bounding boxes e níveis de confiança.
+
+Exemplos de detecções realizadas:
+
+- `phone` com aproximadamente 93% de confiança;
+- `water_bottle` com aproximadamente 90% de confiança.
+
+## 13. Evidências
 
 As evidências do desenvolvimento do projeto estão disponíveis na pasta `evidencias/`.
 
@@ -115,13 +169,15 @@ Entre as evidências estão:
 
 - ESP32-CAM funcionando;
 - Visualização da câmera através do navegador;
+- Captura de imagens;
 - Dataset no Roboflow;
 - Organização e versão do dataset;
 - Anotações das classes;
-- Treinamento experimental;
+- Treinamento do modelo YOLOv11 Nano;
+- Métricas do treinamento;
 - Testes de detecção.
 
-## 11. Estrutura da entrega
+## 14. Estrutura da entrega
 
 A estrutura final do projeto está organizada da seguinte maneira:
 
@@ -131,17 +187,22 @@ CP1/
 │   ├── boot.py
 │   └── main.py
 │
+├── fotos/
+│   └── imagens_capturadas.jpg
+│
 ├── evidencias/
 │   ├── esp32cam_funcionando.png
 │   └── Roboflow_CP1_Documentacao.pdf
 │
 ├── dataset/
-│   └── redbull.v3i.yolov11.zip
+│   └── dataset_exportado/
+│
+├── main.py
 │
 └── README.md
 ```
 
-## 12. Execução da ESP32-CAM
+## 15. Execução da ESP32-CAM
 
 Para executar o firmware:
 
@@ -151,12 +212,50 @@ Para executar o firmware:
 4. Executar o programa na placa.
 5. Identificar o endereço IP disponibilizado pela ESP32-CAM.
 6. Acessar o endereço IP através de um navegador.
-7. Utilizar a interface web para visualizar e realizar capturas de imagens.
+7. Utilizar a interface web para visualizar a câmera.
 
-## 13. Resultado
+## 16. Execução do script Python
 
-Ao final do processo, foi desenvolvido um dataset com duas classes de objetos, contendo imagens coletadas, organizadas e anotadas no Roboflow.
+Para executar o programa responsável pela captura das imagens:
 
-O dataset foi exportado em formato YOLO e utilizado experimentalmente para o treinamento de um modelo YOLOv11 Nano e realização de testes de detecção.
+1. Instalar o Python.
+2. Instalar as bibliotecas necessárias:
 
-As evidências e os arquivos utilizados no desenvolvimento estão organizados nas respectivas pastas desta entrega.
+```bash
+pip install opencv-python requests numpy
+```
+
+3. Configurar no código o endereço IP da ESP32-CAM:
+
+```python
+ESP32_URL = "http://IP_DA_ESP32/capture"
+```
+
+4. Executar o programa:
+
+```bash
+python main.py
+```
+
+5. As imagens capturadas serão armazenadas na pasta `fotos/`.
+6. Para encerrar a captura, pressionar a tecla `Q`.
+
+## 17. Resultado final
+
+Ao final do processo, foi desenvolvido um dataset de Visão Computacional utilizando imagens capturadas pela ESP32-CAM e posteriormente anotadas no Roboflow.
+
+O dataset possui duas classes oficiais:
+
+- `phone`
+- `water_bottle`
+
+O dataset foi utilizado para o treinamento de um modelo YOLOv11 Nano, que apresentou:
+
+- **97,6% de mAP@50**
+- **98,1% de Precision**
+- **98,1% de Recall**
+- **98,1% de F1**
+
+Também foram realizados testes de detecção utilizando imagens das duas classes, demonstrando a capacidade do modelo de identificar os objetos e gerar suas respectivas bounding boxes.
+
+As evidências, códigos e arquivos utilizados no desenvolvimento estão organizados nas respectivas pastas desta entrega.
